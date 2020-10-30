@@ -1,0 +1,29 @@
+{
+    "name": "digitalrevolution/dolarsi",
+    "description": "Librería para obtener el precio del dolar en Argentina",
+    "type": "library",
+    "authors": [
+        {
+            "name": "DebianMoor",
+            "email": "facueche@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=7.4",
+        "guzzlehttp/guzzle": "6.5"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "DigitalRevolution\\DolarSi\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "DigitalRevolution\\DolarSi\\Tests\\": "tests/"
+        }
+    }
+}
