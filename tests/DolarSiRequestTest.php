@@ -2,7 +2,7 @@
 
 namespace DigitalRevolution\DolarSi\Tests;
 
-use DigitalRevolution\DolarSi\Http\DolarSiClient;
+use DigitalRevolution\DolarSi\Http\DolarSiService;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
@@ -10,28 +10,30 @@ use GuzzleHttp\Psr7\Response;
 
 class DolarSiRequestTest extends \PHPUnit\Framework\TestCase
 {
-    private $dollarSiClient;
+    /** @var DolarSiService */
+    private $dollarSiService;
 
     protected function setUp(): void {
         parent::setUp();
-        $this->dollarSiClient = new DolarSiClient($this->getHandlerStackClient($this->successResponseMock()));
+        $this->dollarSiService = app(DolarSiService::class);
+        $this->dollarSiService->setClient($this->getHandlerStackClient());
     }
 
     public function testArgentianDollarPriceRetrievement()
     {
-        $response = $this->dollarSiClient->getDollarPrice();
+        $response = $this->dollarSiService->getDollarPrice();
         $this->assertEquals($response, 20);
     }
 
     public function testDollar2ArgentinianPeso()
     {
-        $response = $this->dollarSiClient->dollar2ArgentinianPeso(2);
+        $response = $this->dollarSiService->dollar2ArgentinianPeso(2);
         $this->assertEquals($response, 40);
     }
 
     public function testArgentinianPeso2Dollar()
     {
-        $response = $this->dollarSiClient->argentinianPeso2Dollar(40);
+        $response = $this->dollarSiService->argentinianPeso2Dollar(40);
         $this->assertEquals($response, 2);
     }
 
@@ -54,8 +56,11 @@ class DolarSiRequestTest extends \PHPUnit\Framework\TestCase
         ]);
     }
 
-    private function getHandlerStackClient(MockHandler $mock): Client
+    private function getHandlerStackClient(): Client
     {
-        return new Client(['handler' => HandlerStack::create($mock)]);
+        return new Client([
+            'base_uri' => 'http://127.0.0.1/',
+            'handler' => HandlerStack::create($this->successResponseMock())
+        ]);
     }
 }

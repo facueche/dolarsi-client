@@ -2,25 +2,26 @@
 
 namespace DigitalRevolution\DolarSi\Http;
 
-class DolarSiClient
+use GuzzleHttp\Client;
+
+class DolarSiService
 {
-    const DOLARSI_API_URL = 'https://www.dolarsi.com/api/api.php?type=valoresprincipales';
+    /** @var Client */
+    public $client;
 
-    private $guzzle;
-
-    public function __construct(\GuzzleHttp\Client $guzzle)
+    public function __construct(Client $client)
     {
-        $this->guzzle = $guzzle;
+        $this->setClient($client);
     }
 
-    public static function getInstance(\GuzzleHttp\Client $guzzle): DolarSiClient
+    public function setClient(Client $client)
     {
-        return new DolarSiClient($guzzle);
+        $this->client = $client;
     }
 
     public function getDollarPrice(): float
     {
-        $response = $this->guzzle->get(self::DOLARSI_API_URL);
+        $response = $this->client->get('api.php?type=valoresprincipales');
         return floatval(str_replace(',', '.', json_decode($response->getBody()->getContents(), true)[0]['casa']['venta']));
     }
 
